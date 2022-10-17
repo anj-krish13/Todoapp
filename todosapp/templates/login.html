@@ -11,16 +11,15 @@
 <body>
     <div class="container">
         <div class="col">
-            <col-4></col-4>
-            <col-4>
-            {%if messages%}
-                {%for msg in messages%}
-                    {{msg}}
-                {%endfor%}
-            {%endif%}
-        
-        </col-4>
-            <col-4></col-4>
+            <div class="col-4"></div>
+            <div class="col-4"> 
+                {%if messages%}
+                    {%for msg in messages%}
+                        {{msg}}
+                    {%endfor%}
+                {%endif%}
+            </div>
+            <div class="col-4"></div>
         </div>
         <div class="row">
             <div class="col-4"></div>
@@ -28,7 +27,7 @@
                 <form action="" method="post">
                     {%csrf_token%}
                     {{form.as_p}}
-                    <input type="submit" value="registration">
+                    <input type="submit" value="login">
             </div>
             <div class="col-4">
              

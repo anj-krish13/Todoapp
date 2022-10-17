@@ -1,8 +1,11 @@
 from django.shortcuts import redirect, render
+from django.urls import is_valid_path
 from django.views.generic import View
-from todosapp.forms import RegistrationForm, TodoForm,TodoModelForm
+from todosapp.forms import LoginForm, RegistrationForm, TodoForm,TodoModelForm
 from todosapp.models import Todos
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login
 # Create your views here.
 
 
@@ -72,8 +75,32 @@ class RegistrationView(View):
     def post(self,request,*args,**kwargs):
         form=RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            obj=form.save(commit=False)
+            User.objects.create_user(**form.cleaned_data)
             messages.success(request,"Registered Successfully")
             return redirect("todolist")
         else:
-            messages.error(request,"registration.html",{"form":form})
+            messages.error(request,"registration failed")
+            return render(request,"registration.html",{"form":form})
+
+
+class LoginView(View):
+    def get(self,request,*args,**kwargs):
+        form=LoginForm()
+        return render(request,"login.html",{"form":form})
+
+    def post(self,request,*args,**kwargs):
+        form=LoginForm(request.POST)
+        if form.is_valid():
+            uname=form.cleaned_data.get("username")
+            pwd=form.cleaned_data.get("password")
+            user=authenticate(request,username=uname,password=pwd)
+            if user:
+                login(request,user)
+                return redirect("todolist")
+            else:
+                messages.error(request,"invalid credentials")
+                return render(request,"login.html",{"form":form})
+
+
+        
